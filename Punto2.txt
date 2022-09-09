@@ -1,0 +1,137 @@
+// Solución hecha por Jesus Zuluaga Moreno
+
+Inicio
+
+Buffer
+    Asignatura
+    Dispositivo Disco
+    reg_asi
+        PRIMARY KEY codigoAsig I[10]
+        nombreAsig S[20]
+        curso I[10]
+        creditos I[2]
+        SECUNDARY KEY cedulaProfAsig I[10]
+EndBuffer
+
+Buffer
+    Profesor
+    Dispositivo Disco
+    reg_prof
+        nombreProf S[20]
+        PRIMARY KEY cedulaProf I[10]
+        fechaIngreso S[20]
+        fechaNacimiento S[20]
+        categoria S[10]
+EndBuffer
+
+Escribir "Digite la cedula del profesor a buscar: "
+Leer cedulaIngresada
+
+'''
+Crearemos un vector para guardar el numero de profesores que haya por categoria
+'''
+numeroProfes = []
+
+// Hasta 4 porque son 4 categorias pero como yo estoy empezando en 0, llegara a 4-1 
+for (k=0 ; k < 4 ; k++) {
+    numeroProfes[k] = 0
+}
+
+Abrir (Profesor, 'r')
+Leer reg_prof
+
+// Aqui usamos el poder de los archivos indexados y accedo directamente a la cedula si la encuentra
+
+if (reg_prof cedulaProf == cedulaIngresada) {
+    Leer reg_prof cedulaProf = cedulaIngresada
+    Escribir 'Nombre del profesor: ' +nombreProf
+    Escribir 'Cedula del profesor: ' +cedulaProf
+    Escribir 'Fecha de ingreso: ' +fechaIngreso
+    Escribir 'Fecha de nacimiento: ' +fechaNacimiento
+    Escribir 'Categoria: ' +categoria
+} else {
+    Escribir 'La cedula ingresada no existe'
+}
+Cerrar (Profesor)
+
+Abrir (Asignatura, 'r')
+Leer reg_asi
+
+'''
+Buscamos la asignatura/asignaturas que imparta un solo profesor e imprimirlas a medida que 
+las vaya encontrando
+'''
+while (!EoF(Asignatura)) {
+    if (cedulaProfAsig == cedulaIngresada) {
+        Escribir 'Nombre de la asignatura: ' +nombreAsig
+        Escribir 'Curso: ' +curso
+    }
+    Leer reg_asi
+}
+Cerrar (Asignatura)
+
+Abrir (Profesor, 'r') 
+Leer reg_prof
+
+'''
+La información se guardara de la siguiente manera: 
+
+numeroProfes[0] : # de Catedraticos
+numeroProfes[1] : # de Titulares
+numeroProfes[2] : # de Asociados
+numeroProfes[3] : # de Ayudantes
+'''
+
+while (!EoF(Profesor)) {
+    switch (categoria) {
+        case 'Catedrático':
+            numeroProfes[0] += 1
+        case 'Titular':
+            numeroProfes[1] += 1
+        case 'Asociado':
+            numeroProfes[2] += 1
+        case 'Auyudante':
+            numeroProfes[3] += 1
+    }
+    Leer reg_prof
+}
+
+Cerrar (Profesor)
+
+mayor = numeroProfes[0]
+
+'''
+Algoritmo para buscar el número mayor del vector, el cual sera el # mayor de personas
+que haya en una categoria
+'''
+for (k=1 ; k < 4 ; k++) {
+    if (mayor < numeroProfes[k]) {
+        mayor = numeroProfes[k]
+    }
+}
+
+'''
+Simplemente comparamos hasta ver cual es la categoria con mayor personal
+'''
+switch (mayor) {
+    case numeroProfes[0]:
+        Escribir 'La categoria con más personal son los Catedraticos'
+    case numeroProfes[1]:
+        Escribir 'La caterogia con más personal son los Titulares'
+    case numeroProfes[2]:
+        Escribir 'La categoria con más personal son los Asociados'
+    case numeroProfes[3]:
+        Escribir 'La categoria con más personal son los Ayudantes'  
+}
+
+'''
+Esto seria (# personasCategoria*sueldo) / # personasCategoria
+claramente # personasCategoria se va a cancelar por lo que simplemente imprimira el sueldo
+'''
+
+Escribir "El promedio salarial por Catedraico es" + (numeroProfes[0]*20000)/numeroProfes[0]
+Escribir "El promedio salarial por Catedraico es" + (numeroProfes[1]*15000)/numeroProfes[1]
+Escribir "El promedio salarial por Catedraico es" + (numeroProfes[2]*10000)/numeroProfes[2]
+Escribir "El promedio salarial por Catedraico es" + (numeroProfes[3]*8000)/numeroProfes[3]
+
+Fin

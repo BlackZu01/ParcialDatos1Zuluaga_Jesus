@@ -1,0 +1,112 @@
+// [+] Solución hecha por Jesus Zuluaga Moreno [+]
+
+Inicio
+
+// Creamos el buffer para el archivo de Candidatos
+Buffer 
+    Candidatos
+    Dispositivo Disco
+    reg_cand
+        cedula I[10]
+        nombreCand S[20]
+        dirViv S[20]
+        celularCand I[10]
+        emailCand S[20]
+        ultimoTit S[20]
+        puntajeObtenido F[5]
+EndBuffer
+
+// Creamos el buffer para el archivo de Empresas
+Buffer
+    Empresas
+    Dispositivo Disco
+    reg_emp
+        descPues S[30]
+        salarioPuesto I[10]
+        nombreEmp S[20]
+        tituloEmp S[10]
+        puntajeMin F[5]
+        cedulaEmp I[10]
+        emailEmp S[20]
+Endbuffer
+
+// Queremos implementar la lógica de la primera consulta solicitada
+
+Escribir 'Digite su cedula: '
+Leer cedulaIn
+
+Abrir (Candidatos, 'r')
+Abrir (Empresas, 'r')
+
+Leer reg_cand
+Leer reg_emp
+encontroCand = false
+
+'''
+Ahora, queremos ver si se encuentra la cedula ingresada en el archivo donde se encuentran todas las 
+cedulas que aparecen en la agencia de empleo
+'''
+
+while (!EoF(Candidatos) && !encontroCand) {
+    if (cedulaIn == cedula) {
+        encontroCand = true
+    } else {
+        Leer reg_cand
+    }
+}
+
+'''
+Hasta este punto, en el archivo Candidatos, estoy posicionado
+en la linea donde encontro la cedula en la agencia de empleos
+por lo que me interesa comparar a continuacion el "puntajeObtenido"
+con "puntajeMin"
+'''
+
+if (encontroCand) {
+    while (!EoF(Empresas) && !EoF(Candidatos)) {
+        if ((puntajeObtenido > puntajeMin) && ultimoTit == tituloEmp) {
+            Escribir "El empleado " +nombreCand+ " es apto para el puesto "+tituloEmp+ " en la empresa " +nombreEmp 
+        } else {
+            Leer reg_emp
+        }
+    }
+} else {
+    Escribir "La cedula ingresada no se encuentra en la agencia de empleos !!!"
+}
+
+Cerrar (Candidatos)
+Cerrar (Empresas)
+
+'''
+Ahora, queremos preguntar por una empresa que se encuentre en la lista de las empresas que buscan
+empleados desde la agencia de empleos
+'''
+
+Escribir "Ingrese el nombre de la empresa: "
+Leer nombreEmpresa
+
+encontroEmpresa = false
+
+Abrir (Empresas, 'r')
+Leer reg_emp
+
+'''
+Encontrado el nombre, imprimimos de inmediato la informacion de la vacante que ofrece
+y nos salimos del archivo porque ya encontramos lo q queriamos
+'''
+while (!EoF(Empresas) && !encontroEmpresa) {
+    if (nombreEmpresa == nombreEmp) {
+        Escribir "Nombre de la empresa: " +nombreEmp
+        Escribir "Descripcion del empleo: " +descPues
+        Escribir "Titulo necesario para el empleo: " +tituloEmp
+        Escribir "Salario: " +salarioPuesto
+        Escribir "Puntaje minimo para aplicar: " +puntajeMin
+        encontroEmpresa = true
+    } else {
+        Leer reg_emp
+    }
+}
+
+Cerrar (Empresas)
+
+Fin
